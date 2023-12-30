@@ -15,7 +15,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController _passController = TextEditingController();
 
   String _email = "";
-  String password = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
@@ -36,7 +36,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     label: Text("Email"),
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value){
+                    if(value == null || value.isEmpty) {
+                      return "Please enter your email address!";
+                    }
+                    return null;
+                  },
+                  onChanged: (value){
+                    setState(() {
+                      _email = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _passController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    label: Text("Password"),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value){
+                    if(value == null || value.isEmpty) {
+                      return "Please enter your email address!";
+                    }
+                    return null;
+                  },
+                  onChanged: (value){
+                    setState(() {
+                      _password = value;
+                    });
+                  },
                 ),
               ],
             ),
