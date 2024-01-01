@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cooking_app/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'forgot_password.dart';
+import 'main_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +15,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -20,11 +23,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _email = "";
   String _password = "";
+
   void handleLogin() async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: _email, password: _password);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _email, password: _password);
       print("User successfully logged in! ${userCredential.user!.email}");
-    } catch(e) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MainPage()));
+    } catch (e) {
       print("Error during login: $e");
     } finally {
       _emailController.clear();
@@ -41,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sign Up"),
+        title: const Text("Login"),
       ),
       body: Center(
         child: Padding(
@@ -58,13 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: Text("Email"),
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value){
-                    if(value == null || value.isEmpty) {
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return "Please enter your email address!";
                     }
                     return null;
                   },
-                  onChanged: (value){
+                  onChanged: (value) {
                     setState(() {
                       _email = value;
                     });
@@ -78,13 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: Text("Password"),
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value){
-                    if(value == null || value.isEmpty) {
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
                       return "Please enter your password!";
                     }
                     return null;
                   },
-                  onChanged: (value){
+                  onChanged: (value) {
                     setState(() {
                       _password = value;
                     });
@@ -92,12 +99,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: (){
-                    if(_formKey.currentState!.validate()) {
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
                       handleLogin();
                     }
                   },
-                  child: const Text("Login"),)
+                  child: const Text("Login"),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SignUpScreen())),
+                  child: const Text("Don't have an account? Sign up"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPasswordScreen())),
+                  child: const Text("Forgot Password?"),
+                ),
               ],
             ),
           ),
@@ -106,5 +123,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
