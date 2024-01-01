@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -17,36 +17,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
 
   String _email = "";
   String _password = "";
-  String _firstName = "";
-  String _lastName = "";
-  void handleSignUp() async {
+  void handleLogin() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: _email, password: _password);
-      print("User successfully registered! ${userCredential.user!.email}");
-
-      await _firestore.collection('Users').doc(userCredential.user!.uid).set({
-        'firstName': _firstName,
-        'lastName': _lastName,
-        'email': _email,
-      });
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: _email, password: _password);
+      print("User successfully logged in! ${userCredential.user!.email}");
     } catch(e) {
-      print("Error during registration: $e");
+      print("Error during login: $e");
     } finally {
       _emailController.clear();
       _passController.clear();
-      _firstNameController.clear();
-      _lastNameController.clear();
 
       setState(() {
         _email = "";
         _password = "";
-        _firstName = "";
-        _lastName = "";
       });
     }
   }
@@ -104,54 +90,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     });
                   },
                 ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _firstNameController,
-                  keyboardType: TextInputType.name,
-                  decoration: const InputDecoration(
-                    label: Text("First name"),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value){
-                    if(value == null || value.isEmpty) {
-                      return "Please enter your first name!";
-                    }
-                    return null;
-                  },
-                  onChanged: (value){
-                    setState(() {
-                      _firstName = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _lastNameController,
-                  keyboardType: TextInputType.name,
-                  decoration: const InputDecoration(
-                    label: Text("Last name"),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value){
-                    if(value == null || value.isEmpty) {
-                      return "Please enter your last name!";
-                    }
-                    return null;
-                  },
-                  onChanged: (value){
-                    setState(() {
-                      _lastName = value;
-                    });
-                  },
-                ),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: (){
                     if(_formKey.currentState!.validate()) {
-                      handleSignUp();
+                      handleLogin();
                     }
                   },
-                  child: const Text("Sign Up"),)
+                  child: const Text("Login"),)
               ],
             ),
           ),
