@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'login_screen.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -24,7 +26,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _password = "";
   String _firstName = "";
   String _lastName = "";
+  void displayMessage(String message, {bool isError = false}) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: isError ? Colors.red : Colors.green,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void handleSignUp() async {
+    if (!_formKey.currentState!.validate()) return;
+
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: _email, password: _password);
       print("User successfully registered! ${userCredential.user!.email}");
@@ -34,8 +46,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'lastName': _lastName,
         'email': _email,
       });
+
+      displayMessage("User successfully registered! Redirecting...");
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
+      });
+
     } catch(e) {
       print("Error during registration: $e");
+      displayMessage("Error during registration: $e", isError: true);
     } finally {
       _emailController.clear();
       _passController.clear();

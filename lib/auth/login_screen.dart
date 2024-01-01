@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cooking_app/signup_screen.dart';
+import 'package:cooking_app/auth/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'forgot_password.dart';
-import 'main_page.dart';
+import '../main_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,6 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String _email = "";
   String _password = "";
 
+  void displayMessage(String message, {bool isError = false}) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: isError ? Colors.red : Colors.green,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   void handleLogin() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -33,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => const MainPage()));
     } catch (e) {
       print("Error during login: $e");
+      displayMessage("Error during login: $e", isError: true);
     } finally {
       _emailController.clear();
       _passController.clear();

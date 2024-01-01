@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'auth/login_screen.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -10,6 +12,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     String? _email = _auth.currentUser!.email;
@@ -24,6 +27,17 @@ class _MainPageState extends State<MainPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Logged in with: $_email"),
+              const SizedBox(
+                height: 50,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _auth.signOut();
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => const LoginScreen()));
+                },
+                child: const Text("Log out"),
+              )
             ],
           ),
         ),
