@@ -18,6 +18,7 @@ class _MainPageState extends State<MainPage> {
     String? _email = _auth.currentUser!.email;
     return Scaffold(
       appBar: AppBar(
+        leading: null,
         title: const Text("Cooking App"),
       ),
       body: Center(
