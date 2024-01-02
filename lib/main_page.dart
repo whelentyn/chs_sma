@@ -18,13 +18,14 @@ class _MainPageState extends State<MainPage> {
 
   final List<Map<String, dynamic>> _allResults = [];
 
+
   @override
   void initState() {
     super.initState();
-    getUserRecipes(); // Fetch user recipes when the widget is initialized
+    _getUserRecipes(); // Fetch user recipes when the widget is initialized
   }
 
-  Future<void> getUserRecipes() async {
+  Future<void> _getUserRecipes() async {
     try {
       String? userId = _auth.currentUser!.uid;
 
@@ -34,6 +35,7 @@ class _MainPageState extends State<MainPage> {
             .where('user_id',
                 isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
             .get();
+
 
         List<String> recipeIds = [];
         for (var doc in userRecipeDocs.docs) {
@@ -64,9 +66,9 @@ class _MainPageState extends State<MainPage> {
 
           if (recipeDoc.exists) {
             userRecipes
-                .add(recipeDoc.data()!); // Assuming data exists and is not null
+                .add(recipeDoc.data()!);
+            }
           }
-        }
         setState(() {
           _allResults.addAll(userRecipes);
         });
@@ -83,7 +85,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    String? _email = _auth.currentUser!.email;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cooking App"),
@@ -98,22 +99,17 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CupertinoSearchTextField(
-              onChanged: (value) {
-                print("The search text is: $value");
-              },
-            ),
-          ),
           SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0),
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => print("Breakfast tapped"),
+                  onPressed: () => {
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.white),
                     // Background color
@@ -194,6 +190,16 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "Favorite recipes",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: _allResults.length,
@@ -234,21 +240,17 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle the camera icon press action.
           print("Camera icon tapped!");
         },
-        // Camera icon
         backgroundColor: Colors.white,
-        // Circle color
-        // The elevation helps in giving the circular shadow confirming it's rounded
         elevation: 5.0,
         child: const Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomAppBar(
-        color: Colors.amber, // Amber color for the bottom bar
-        shape: CircularNotchedRectangle(), // Notch for FloatingActionButton
-        notchMargin: 2.0, // Margin for the notch
+        color: Colors.amber,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 2.0,
       ),
     );
   }
