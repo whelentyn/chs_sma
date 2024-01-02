@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cooking_app/edit_profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final List<Map<String, dynamic>> _allResults =
-      []; // Declared list to hold all recipes
+  final List<Map<String, dynamic>> _allResults = [];
 
   @override
   void initState() {
@@ -31,7 +31,8 @@ class _MainPageState extends State<MainPage> {
       if (userId != null) {
         var userRecipeDocs = await FirebaseFirestore.instance
             .collection('UserRecipes')
-            .where('user_id', isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
+            .where('user_id',
+                isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
             .get();
 
         List<String> recipeIds = [];
@@ -45,7 +46,8 @@ class _MainPageState extends State<MainPage> {
                 // If it's a String, use it directly
                 recipeIds.add(recipeId);
               } else {
-                print('Unexpected type in recipe_id list: ${recipeId.runtimeType}');
+                print(
+                    'Unexpected type in recipe_id list: ${recipeId.runtimeType}');
               }
             }
           } else {
@@ -61,7 +63,8 @@ class _MainPageState extends State<MainPage> {
               .get();
 
           if (recipeDoc.exists) {
-            userRecipes.add(recipeDoc.data()!); // Assuming data exists and is not null
+            userRecipes
+                .add(recipeDoc.data()!); // Assuming data exists and is not null
           }
         }
         setState(() {
@@ -70,10 +73,11 @@ class _MainPageState extends State<MainPage> {
 
         print('Number of recipes retrieved: ${_allResults.length}');
       } else {
-        print('No user logged in'); // Log unsuccessful operation due to no user
+        print('No user logged in');
       }
     } catch (e) {
-      print('An error occurred while retrieving user recipes: $e'); // Log any exceptions
+      print(
+          'An error occurred while retrieving user recipes: $e');
     }
   }
 
@@ -82,14 +86,13 @@ class _MainPageState extends State<MainPage> {
     String? _email = _auth.currentUser!.email;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: const Text("Cooking App"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              // Handle the press action. For example, navigate to the profile page.
-              print("Profile icon tapped!"); // Replace with your navigation logic
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const EditProfileScreen()));
             },
           ),
         ],
@@ -100,7 +103,6 @@ class _MainPageState extends State<MainPage> {
             padding: const EdgeInsets.all(8.0),
             child: CupertinoSearchTextField(
               onChanged: (value) {
-                // Implement the search logic or handle the text change.
                 print("The search text is: $value");
               },
             ),
@@ -113,14 +115,19 @@ class _MainPageState extends State<MainPage> {
                 TextButton(
                   onPressed: () => print("Breakfast tapped"),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),  // Background color
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    // Background color
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),  // Rounded corners
-                        side: const BorderSide(color: Colors.black, width: 2),  // Border
+                        borderRadius: BorderRadius.circular(18.0),
+                        // Rounded corners
+                        side: const BorderSide(
+                            color: Colors.black, width: 2), // Border
                       ),
                     ),
-                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10, horizontal: 20)), // Padding
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20)), // Padding
                   ),
                   child: Text("Breakfast"),
                 ),
@@ -128,14 +135,19 @@ class _MainPageState extends State<MainPage> {
                 TextButton(
                   onPressed: () => print("Dinner tapped"),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),  // Background color
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    // Background color
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),  // Rounded corners
-                        side: const BorderSide(color: Colors.black, width: 2),  // Border
+                        borderRadius: BorderRadius.circular(18.0),
+                        // Rounded corners
+                        side: const BorderSide(
+                            color: Colors.black, width: 2), // Border
                       ),
                     ),
-                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10, horizontal: 20)), // Padding
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20)), // Padding
                   ),
                   child: Text("Dinner"),
                 ),
@@ -143,14 +155,19 @@ class _MainPageState extends State<MainPage> {
                 TextButton(
                   onPressed: () => print("Dessert tapped"),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),  // Background color
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    // Background color
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),  // Rounded corners
-                        side: const BorderSide(color: Colors.black, width: 2),  // Border
+                        borderRadius: BorderRadius.circular(18.0),
+                        // Rounded corners
+                        side: const BorderSide(
+                            color: Colors.black, width: 2), // Border
                       ),
                     ),
-                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10, horizontal: 20)), // Padding
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20)), // Padding
                   ),
                   child: Text("Dessert"),
                 ),
@@ -158,14 +175,19 @@ class _MainPageState extends State<MainPage> {
                 TextButton(
                   onPressed: () => print("Lunch tapped"),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),  // Background color
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    // Background color
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),  // Rounded corners
-                        side: const BorderSide(color: Colors.black, width: 2),  // Border
+                        borderRadius: BorderRadius.circular(18.0),
+                        // Rounded corners
+                        side: const BorderSide(
+                            color: Colors.black, width: 2), // Border
                       ),
                     ),
-                    padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 10, horizontal: 20)), // Padding
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20)), // Padding
                   ),
                   child: const Text("Lunch"),
                 ),
@@ -182,16 +204,17 @@ class _MainPageState extends State<MainPage> {
                       color: Colors.black, // Set border color
                       width: 2.0, // Set border width
                     ),
-                    borderRadius: BorderRadius.circular(8.0), // Optional: Set border radius
+                    borderRadius: BorderRadius.circular(
+                        8.0),
                   ),
                   child: ListTile(
                     leading: _allResults[index]['image_url'] != null
                         ? Image.network(
-                      _allResults[index]['image_url'],
-                      width: 75,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    )
+                            _allResults[index]['image_url'],
+                            width: 75,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
                         : const SizedBox(width: 50, height: 50),
                     title: Text(
                       _allResults[index]['name'],
@@ -213,17 +236,19 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           // Handle the camera icon press action.
           print("Camera icon tapped!");
-        },  // Camera icon
-        backgroundColor: Colors.white,  // Circle color
+        },
+        // Camera icon
+        backgroundColor: Colors.white,
+        // Circle color
         // The elevation helps in giving the circular shadow confirming it's rounded
         elevation: 5.0,
         child: const Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomAppBar(
-        color: Colors.amber,  // Amber color for the bottom bar
-        shape: CircularNotchedRectangle(),  // Notch for FloatingActionButton
-        notchMargin: 2.0,  // Margin for the notch
+        color: Colors.amber, // Amber color for the bottom bar
+        shape: CircularNotchedRectangle(), // Notch for FloatingActionButton
+        notchMargin: 2.0, // Margin for the notch
       ),
     );
   }
