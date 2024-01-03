@@ -3,6 +3,8 @@ import 'package:cooking_app/auth/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 import 'forgot_password.dart';
 import '../main_page.dart';
 
