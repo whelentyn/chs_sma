@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'auth/login_screen.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -16,7 +18,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _newPassController = TextEditingController();
-  final TextEditingController _newPassConfirmedController = TextEditingController();
+  final TextEditingController _newPassConfirmedController =
+      TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
 
@@ -34,7 +37,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void fetchUserData() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      DocumentSnapshot userDoc = await _firestore.collection('Users').doc(user.uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('Users').doc(user.uid).get();
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         setState(() {
@@ -130,7 +134,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       label: Text("New Password"),
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (value){
+                    onChanged: (value) {
                       _newPassword = value;
                     },
                   ),
@@ -142,8 +146,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       label: Text("Confirm New Password"),
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value){
-                      if(value != _newPassController.text) {
+                    validator: (value) {
+                      if (value != _newPassController.text) {
                         return "Passwords do not match!";
                       }
                       return null;
@@ -154,6 +158,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     onPressed: handleEditProfile,
                     child: const Text("Update"),
                   ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      _auth.signOut();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const LoginScreen()));
+                    },
+                    child: const Text("Log out"),
+                  ),
                 ],
               ),
             ),
@@ -163,6 +176,3 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 }
-
-
-
