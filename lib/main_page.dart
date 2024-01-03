@@ -15,19 +15,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   final List<Map<String, dynamic>> _allResults = [];
-
+  String _selectedCategory = 'All'; // Track the selected category
+  final List<String> _recipeIds = [];
 
   @override
   void initState() {
     super.initState();
-    _getUserRecipes(); // Fetch user recipes when the widget is initialized
+    _getUserRecipes(); // Fetch all recipes initially
   }
 
-  Future<void> _getUserRecipes() async {
+  Future<void> _getUserRecipes({String category = 'All'}) async {
     try {
-      String? userId = _auth.currentUser!.uid;
+      String? userId = _auth.currentUser?.uid;
+      _recipeIds.clear();
+
 
       if (userId != null) {
         var userRecipeDocs = await FirebaseFirestore.instance
@@ -36,52 +38,103 @@ class _MainPageState extends State<MainPage> {
                 isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
             .get();
 
-
-        List<String> recipeIds = [];
         for (var doc in userRecipeDocs.docs) {
           var recipeIdList = doc['recipe_id'];
           if (recipeIdList is List) {
             for (var recipeId in recipeIdList) {
               if (recipeId is DocumentReference) {
-                recipeIds.add(recipeId.id);
-              } else if (recipeId is String) {
-                // If it's a String, use it directly
-                recipeIds.add(recipeId);
-              } else {
-                print(
-                    'Unexpected type in recipe_id list: ${recipeId.runtimeType}');
+                _recipeIds.add(recipeId.id);
               }
             }
-          } else {
-            print('Unexpected type for recipe_id: ${recipeIdList.runtimeType}');
           }
         }
-        List<Map<String, dynamic>> userRecipes = [];
 
-        for (var recipeId in recipeIds) {
+        List<Map<String, dynamic>> userRecipes = [];
+        for (var recipeId in _recipeIds) {
           var recipeDoc = await FirebaseFirestore.instance
               .collection('Recipes')
               .doc(recipeId)
               .get();
 
-          if (recipeDoc.exists) {
-            userRecipes
-                .add(recipeDoc.data()!);
-            }
+          if (recipeDoc.exists &&
+              (category == 'All' ||
+                  recipeDoc.data()!['category'] == category)) {
+            Map<String, dynamic> recipeData = recipeDoc.data()!;
+            recipeData['id'] = recipeId; // Include the recipeId
+            userRecipes.add(recipeData);
           }
+        }
+
         setState(() {
+          _allResults.clear();
           _allResults.addAll(userRecipes);
         });
-
-        print('Number of recipes retrieved: ${_allResults.length}');
       } else {
         print('No user logged in');
       }
     } catch (e) {
-      print(
-          'An error occurred while retrieving user recipes: $e');
+      print('An error occurred while retrieving user recipes: $e');
     }
   }
+
+  void _onCategoryPressed(String category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+    _getUserRecipes(category: category);
+  }
+
+  Widget _buildCategoryButton(String label) {
+    return TextButton(
+      onPressed: () => _onCategoryPressed(label),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+            _selectedCategory == label ? Colors.grey : Colors.white),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: const BorderSide(color: Colors.black, width: 2),
+          ),
+        ),
+        padding: MaterialStateProperty.all(
+            const EdgeInsets.symmetric(vertical: 10, horizontal: 20)),
+      ),
+      child: Text(label),
+    );
+  }
+
+  Future<void> _removeRecipeFromUser(String? recipeId) async {
+    try {
+      String? userId = _auth.currentUser?.uid;
+
+      if (userId != null && recipeId != null) {
+        String fullPath = recipeId.contains('/') ? recipeId : 'Recipes/$recipeId';
+        print("Full path to remove: $fullPath"); // Debug
+
+        var userRecipeQuery = await FirebaseFirestore.instance
+            .collection('UserRecipes')
+            .where('user_id', isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
+            .get();
+
+        if (userRecipeQuery.docs.isNotEmpty) {
+          DocumentReference userRecipesRef = userRecipeQuery.docs.first.reference;
+
+          await userRecipesRef.update({
+            'recipe_id': FieldValue.arrayRemove([FirebaseFirestore.instance.doc(fullPath)])
+          });
+
+          print("Recipe with path $fullPath should be removed from user $userId");
+
+          _getUserRecipes(category: _selectedCategory);
+        } else {
+          print("No UserRecipes document found for the user: $userId");
+        }
+      }
+    } catch (e) {
+      print('An error occurred while removing the recipe: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +145,8 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const EditProfileScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen()));
             },
           ),
         ],
@@ -107,86 +160,15 @@ class _MainPageState extends State<MainPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
-                  onPressed: () => {
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    // Background color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        // Rounded corners
-                        side: const BorderSide(
-                            color: Colors.black, width: 2), // Border
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20)), // Padding
-                  ),
-                  child: Text("Breakfast"),
-                ),
+                _buildCategoryButton("All"),
                 const SizedBox(width: 8),
-                TextButton(
-                  onPressed: () => print("Dinner tapped"),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    // Background color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        // Rounded corners
-                        side: const BorderSide(
-                            color: Colors.black, width: 2), // Border
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20)), // Padding
-                  ),
-                  child: Text("Dinner"),
-                ),
+                _buildCategoryButton("Breakfast"),
                 const SizedBox(width: 8),
-                TextButton(
-                  onPressed: () => print("Dessert tapped"),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    // Background color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        // Rounded corners
-                        side: const BorderSide(
-                            color: Colors.black, width: 2), // Border
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20)), // Padding
-                  ),
-                  child: Text("Dessert"),
-                ),
+                _buildCategoryButton("Dinner"),
                 const SizedBox(width: 8),
-                TextButton(
-                  onPressed: () => print("Lunch tapped"),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    // Background color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        // Rounded corners
-                        side: const BorderSide(
-                            color: Colors.black, width: 2), // Border
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20)), // Padding
-                  ),
-                  child: const Text("Lunch"),
-                ),
+                _buildCategoryButton("Dessert"),
+                const SizedBox(width: 8),
+                _buildCategoryButton("Lunch"),
               ],
             ),
           ),
@@ -204,32 +186,47 @@ class _MainPageState extends State<MainPage> {
             child: ListView.builder(
               itemCount: _allResults.length,
               itemBuilder: (context, index) {
+                var recipe = _allResults[index];
                 return Card(
                   shape: RoundedRectangleBorder(
                     side: const BorderSide(
-                      color: Colors.black, // Set border color
-                      width: 2.0, // Set border width
+                      color: Colors.black,
+                      width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(
-                        8.0),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: ListTile(
-                    leading: _allResults[index]['image_url'] != null
+                    leading: recipe['image_url'] != null
                         ? Image.network(
-                            _allResults[index]['image_url'],
-                            width: 75,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
+                      recipe['image_url'],
+                      width: 75,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
                         : const SizedBox(width: 50, height: 50),
                     title: Text(
-                      _allResults[index]['name'],
+                      recipe['name'] ?? 'Recipe Name',
                     ),
                     subtitle: Text(
-                      _allResults[index]['description'],
+                      recipe['description'] ?? 'Description',
                     ),
-                    trailing: Text(
-                      _allResults[index]['preparation_time'],
+                    trailing: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(
+                            recipe['preparation_time'] ?? 'Prep Time',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.favorite, color: Colors.red),
+                            onPressed: () {
+                              String? recipeId = recipe['id']; // Use the recipe ID directly
+                              if (recipeId != null) {
+                                _removeRecipeFromUser(recipeId);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -240,7 +237,6 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("Camera icon tapped!");
         },
         backgroundColor: Colors.white,
         elevation: 5.0,
