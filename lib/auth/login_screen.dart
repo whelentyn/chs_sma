@@ -91,7 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Log In",
                   style: TextStyle(
                     color: Color(0xFF545454),
-                    fontFamily: 'Rubik',
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -161,7 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0), // Set a high value for a rounded square
+                          borderRadius: BorderRadius.circular(30.0),
+                          // Set a high value for a rounded square
                         ),
                         backgroundColor: const Color(0xFFD9D9D9),
                         padding: const EdgeInsets.all(5.0),

@@ -108,7 +108,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     "Sign Up",
                     style: TextStyle(
                       color: Color(0xFF545454),
-                      fontFamily: 'Rubik',
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
