@@ -290,7 +290,10 @@ class _MainPageState extends State<MainPage> {
         width: 70.0,
         child: FittedBox(
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const PhotoScreen()));
+            },
             backgroundColor: Color(0xFFC3C1C1),
             elevation: 8.0,
             shape: const CircleBorder(
