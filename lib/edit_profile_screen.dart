@@ -100,7 +100,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: const Text("Edit Profile"),
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
@@ -109,42 +110,90 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    alignment: Alignment.topLeft,
+                    child: const Column(
+                      children: [
+                        SizedBox(height: 0),
+                        Text(
+                          "Change your information",
+                          style: TextStyle(
+                            color: Color(0xFF545454),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _firstNameController,
                     keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      label: Text("First name"),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
+                      hintText: " First Name",
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
+                      filled: true,  // Set to true to enable background color
+                      fillColor: Color(0xFFD9D9D9),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _lastNameController,
                     keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      label: Text("Last name"),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
+                      hintText: " Last Name",
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
+                      filled: true,  // Set to true to enable background color
+                      fillColor: Color(0xFFD9D9D9),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    alignment: Alignment.topLeft,
+                    child: const Column(
+                      children: [
+                        SizedBox(height: 0),
+                        Text(
+                          "Change your password",
+                          style: TextStyle(
+                            color: Color(0xFF545454),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   TextFormField(
                     controller: _newPassController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      label: Text("New Password"),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
+                      hintText: " New Password",
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
+                      filled: true,  // Set to true to enable background color
+                      fillColor: Color(0xFFD9D9D9),
                     ),
                     onChanged: (value) {
                       _newPassword = value;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   TextFormField(
                     controller: _newPassConfirmedController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      label: Text("Confirm New Password"),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
+                      hintText: " Confirm New Password",
+                      border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
+                      filled: true,  // Set to true to enable background color
+                      fillColor: Color(0xFFD9D9D9),
                     ),
                     validator: (value) {
                       if (value != _newPassController.text) {
@@ -153,19 +202,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: handleEditProfile,
-                    child: const Text("Update"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD9D9D9),
+                    ),
+                    child: Text("Update", style: TextStyle(color: Color(0xFF545454))),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: 15),
                   ElevatedButton(
                     onPressed: () {
                       _auth.signOut();
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => const LoginScreen()));
                     },
-                    child: const Text("Log out"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD9D9D9),
+                    ),
+                    child: Text("Log Out", style: TextStyle(color: Color(0xFF545454))),
                   ),
                 ],
               ),

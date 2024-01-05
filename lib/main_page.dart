@@ -4,6 +4,7 @@ import 'package:cooking_app/photo_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'auth/login_screen.dart';
 
@@ -90,17 +91,19 @@ class _MainPageState extends State<MainPage> {
       onPressed: () => _onCategoryPressed(label),
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(
-            _selectedCategory == label ? Colors.grey : Colors.white),
+            _selectedCategory == label ? Colors.grey : Color(0xAAD9D9D9)),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-            side: const BorderSide(color: Colors.black, width: 2),
+            borderRadius: BorderRadius.circular(25.5),
+            side: BorderSide.none,
           ),
         ),
         padding: MaterialStateProperty.all(
             const EdgeInsets.symmetric(vertical: 10, horizontal: 20)),
       ),
-      child: Text(label),
+      child: Text(label, style: TextStyle(
+    color: Colors.black, // Change this color to your desired text color
+    ),),
     );
   }
 
@@ -141,7 +144,21 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cooking App"),
+        title: Text(
+          "Food\nCam", style: GoogleFonts.lexendMega(
+            fontWeight: FontWeight.bold,
+            fontSize: 22.0,
+            height: 0.8,
+            color: Color(0xFF545454)
+        ),),
+        leading: Padding(
+            padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
+            child: Image.asset(
+              'assets/logoFoodCam.png', // Replace with the path to your custom icon
+              width: 50, // Adjust the width as needed
+              height: 50, // Adjust the height as needed
+            )
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person),
@@ -156,7 +173,7 @@ class _MainPageState extends State<MainPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
             scrollDirection: Axis.horizontal,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -174,11 +191,12 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 5),
             child: Text(
               "Favorite recipes",
               style: TextStyle(
                 fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.left,
             ),
@@ -190,35 +208,54 @@ class _MainPageState extends State<MainPage> {
                 var recipe = _allResults[index];
                 return Card(
                   shape: RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: Colors.black,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide.none,
+                    borderRadius: BorderRadius.circular(25.5),
                   ),
-                  child: ListTile(
-                    leading: recipe['image_url'] != null
-                        ? Image.network(
-                      recipe['image_url'],
-                      width: 75,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    )
-                        : const SizedBox(width: 50, height: 50),
-                    title: Text(
-                      recipe['name'] ?? 'Recipe Name',
-                    ),
-                    subtitle: Text(
-                      recipe['description'] ?? 'Description',
-                    ),
-                    trailing: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Text(
-                            recipe['preparation_time'] ?? 'Prep Time',
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.favorite, color: Colors.red),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(25.5), topRight: Radius.circular(25.5)), // Adjust the radius as needed
+                              child: Container(
+                                height: 100, // Adjust the height of the image as needed
+                                child: recipe['image_url'] != null
+                                    ? Image.network(
+                                  recipe['image_url'],
+                                  fit: BoxFit.cover,
+                                )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ),
+                            ListTile(
+                              title: Text(
+                                recipe['name'] ?? 'Recipe Name',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                recipe['description'] ?? 'Description',
+                              ),
+                              trailing: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    recipe['preparation_time'] ?? 'Prep Time',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          bottom: 0.0,
+                          right: 18.0,
+                          child: IconButton(
+                            icon: const Icon(Icons.favorite, color: Colors.brown),
                             onPressed: () {
                               String? recipeId = recipe['id']; // Use the recipe ID directly
                               if (recipeId != null) {
@@ -226,8 +263,8 @@ class _MainPageState extends State<MainPage> {
                               }
                             },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -236,6 +273,23 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
+      floatingActionButton: Container(
+        height: 70.0,
+        width: 70.0,
+        child: FittedBox(
+          child: FloatingActionButton(
+            onPressed: () {
+            },
+            backgroundColor: Color(0xFFC3C1C1),
+            elevation: 8.0,
+            shape: const CircleBorder(side: BorderSide.none,),
+            child: Image.asset(
+            'assets/camIcon.png', // Replace with the path to your custom icon
+            width: 35, // Adjust the width as needed
+            height: 35, // Adjust the height as needed
+          ),
+          ),
+        ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push<void>(
@@ -251,9 +305,9 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomAppBar(
-        color: Colors.amber,
-        shape: CircularNotchedRectangle(),
-        notchMargin: 2.0,
+        color: Color(0xFFD9D9D9),
+        height: 60.0,
+        shape: null,
       ),
     );
   }

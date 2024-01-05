@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -43,7 +45,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Reset Password"),
+        title: Text(
+          "Food\nCam", style: GoogleFonts.lexendMega(
+            fontWeight: FontWeight.bold,
+            fontSize: 22.0,
+            height: 0.8,
+            color: Color(0xFF545454)
+        ),),
+        leading: Padding(
+            padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
+            child: Image.asset(
+              'assets/logoFoodCam.png', // Replace with the path to your custom icon
+              width: 50, // Adjust the width as needed
+              height: 50, // Adjust the height as needed
+            )
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -60,9 +76,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
+                  hintText: " Email",
+                  border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30)),
+                  filled: true,  // Set to true to enable background color
+                  fillColor: Color(0xFFD9D9D9),
                 ),
                 validator: (value) {
                   if (value!.isEmpty || !value.contains('@')) {
@@ -80,7 +99,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     _resetPassword();
                   }
                 },
-                child: const Text('Send Password Reset Email'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFD9D9D9),
+                ),
+                child: const Text('Send Password Reset Email', style: TextStyle(color: Color(0xFF545454))),
               ),
               const SizedBox(height: 20),
               Text(
