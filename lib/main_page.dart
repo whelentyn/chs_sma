@@ -32,7 +32,6 @@ class _MainPageState extends State<MainPage> {
       String? userId = _auth.currentUser?.uid;
       _recipeIds.clear();
 
-
       if (userId != null) {
         var userRecipeDocs = await FirebaseFirestore.instance
             .collection('UserRecipes')
@@ -101,9 +100,12 @@ class _MainPageState extends State<MainPage> {
         padding: MaterialStateProperty.all(
             const EdgeInsets.symmetric(vertical: 10, horizontal: 20)),
       ),
-      child: Text(label, style: TextStyle(
-    color: Colors.black, // Change this color to your desired text color
-    ),),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: Colors.black, // Change this color to your desired text color
+        ),
+      ),
     );
   }
 
@@ -112,22 +114,27 @@ class _MainPageState extends State<MainPage> {
       String? userId = _auth.currentUser?.uid;
 
       if (userId != null && recipeId != null) {
-        String fullPath = recipeId.contains('/') ? recipeId : 'Recipes/$recipeId';
+        String fullPath =
+            recipeId.contains('/') ? recipeId : 'Recipes/$recipeId';
         print("Full path to remove: $fullPath"); // Debug
 
         var userRecipeQuery = await FirebaseFirestore.instance
             .collection('UserRecipes')
-            .where('user_id', isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
+            .where('user_id',
+                isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
             .get();
 
         if (userRecipeQuery.docs.isNotEmpty) {
-          DocumentReference userRecipesRef = userRecipeQuery.docs.first.reference;
+          DocumentReference userRecipesRef =
+              userRecipeQuery.docs.first.reference;
 
           await userRecipesRef.update({
-            'recipe_id': FieldValue.arrayRemove([FirebaseFirestore.instance.doc(fullPath)])
+            'recipe_id': FieldValue.arrayRemove(
+                [FirebaseFirestore.instance.doc(fullPath)])
           });
 
-          print("Recipe with path $fullPath should be removed from user $userId");
+          print(
+              "Recipe with path $fullPath should be removed from user $userId");
 
           _getUserRecipes(category: _selectedCategory);
         } else {
@@ -139,26 +146,26 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Food\nCam", style: GoogleFonts.lexendMega(
-            fontWeight: FontWeight.bold,
-            fontSize: 22.0,
-            height: 0.8,
-            color: Color(0xFF545454)
-        ),),
+          "Food\nCam",
+          style: GoogleFonts.lexendMega(
+              fontWeight: FontWeight.bold,
+              fontSize: 22.0,
+              height: 0.8,
+              color: Color(0xFF545454)),
+        ),
         leading: Padding(
             padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
             child: Image.asset(
-              'assets/logoFoodCam.png', // Replace with the path to your custom icon
+              'assets/logoFoodCam.png',
+              // Replace with the path to your custom icon
               width: 50, // Adjust the width as needed
               height: 50, // Adjust the height as needed
-            )
-        ),
+            )),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person),
@@ -219,14 +226,18 @@ class _MainPageState extends State<MainPage> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(25.5), topRight: Radius.circular(25.5)), // Adjust the radius as needed
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25.5),
+                                  topRight: Radius.circular(25.5)),
+                              // Adjust the radius as needed
                               child: Container(
-                                height: 100, // Adjust the height of the image as needed
+                                height: 100,
+                                // Adjust the height of the image as needed
                                 child: recipe['image_url'] != null
                                     ? Image.network(
-                                  recipe['image_url'],
-                                  fit: BoxFit.cover,
-                                )
+                                        recipe['image_url'],
+                                        fit: BoxFit.cover,
+                                      )
                                     : const SizedBox.shrink(),
                               ),
                             ),
@@ -245,7 +256,6 @@ class _MainPageState extends State<MainPage> {
                                     recipe['preparation_time'] ?? 'Prep Time',
                                     style: TextStyle(fontSize: 12),
                                   ),
-
                                 ],
                               ),
                             ),
@@ -255,9 +265,11 @@ class _MainPageState extends State<MainPage> {
                           bottom: 0.0,
                           right: 18.0,
                           child: IconButton(
-                            icon: const Icon(Icons.favorite, color: Colors.brown),
+                            icon:
+                                const Icon(Icons.favorite, color: Colors.brown),
                             onPressed: () {
-                              String? recipeId = recipe['id']; // Use the recipe ID directly
+                              String? recipeId =
+                                  recipe['id']; // Use the recipe ID directly
                               if (recipeId != null) {
                                 _removeRecipeFromUser(recipeId);
                               }
@@ -278,30 +290,19 @@ class _MainPageState extends State<MainPage> {
         width: 70.0,
         child: FittedBox(
           child: FloatingActionButton(
-            onPressed: () {
-            },
+            onPressed: () {},
             backgroundColor: Color(0xFFC3C1C1),
             elevation: 8.0,
-            shape: const CircleBorder(side: BorderSide.none,),
+            shape: const CircleBorder(
+              side: BorderSide.none,
+            ),
             child: Image.asset(
-            'assets/camIcon.png', // Replace with the path to your custom icon
-            width: 35, // Adjust the width as needed
-            height: 35, // Adjust the height as needed
-          ),
+              'assets/camIcon.png', // Replace with the path to your custom icon
+              width: 35, // Adjust the width as needed
+              height: 35, // Adjust the height as needed
+            ),
           ),
         ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push<void>(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) => const PhotoScreen(),
-            ),
-          );
-        },
-        backgroundColor: Colors.white,
-        elevation: 5.0,
-        child: const Icon(Icons.camera_alt),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomAppBar(

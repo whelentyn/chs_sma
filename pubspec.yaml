@@ -70,6 +70,8 @@ flutter:
   assets:
     - assets/labels.txt
     - assets/model.tflite
+    - assets/logoFoodCam.png
+    - assets/camIcon.png
 #     - images/a_dot_burr.jpeg
 #     - images/a_dot_ham.jpeg
 
@@ -103,7 +105,3 @@ flutter:
       fonts:
         - asset: fonts/Rubik_Regular.ttf
           weight: 400   # Regular font style
-
-  assets:
-    - assets/logoFoodCam.png
-    - assets/camIcon.png
