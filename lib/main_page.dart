@@ -229,10 +229,8 @@ class _MainPageState extends State<MainPage> {
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(25.5),
                                   topRight: Radius.circular(25.5)),
-                              // Adjust the radius as needed
                               child: Container(
                                 height: 100,
-                                // Adjust the height of the image as needed
                                 child: recipe['image_url'] != null
                                     ? Image.network(
                                         recipe['image_url'],
@@ -269,7 +267,7 @@ class _MainPageState extends State<MainPage> {
                                 const Icon(Icons.favorite, color: Colors.brown),
                             onPressed: () {
                               String? recipeId =
-                                  recipe['id']; // Use the recipe ID directly
+                                  recipe['id'];
                               if (recipeId != null) {
                                 _removeRecipeFromUser(recipeId);
                               }
@@ -300,9 +298,9 @@ class _MainPageState extends State<MainPage> {
               side: BorderSide.none,
             ),
             child: Image.asset(
-              'assets/camIcon.png', // Replace with the path to your custom icon
-              width: 35, // Adjust the width as needed
-              height: 35, // Adjust the height as needed
+              'assets/camIcon.png',
+              width: 35,
+              height: 35,
             ),
           ),
         ),

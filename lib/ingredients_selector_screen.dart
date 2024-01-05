@@ -91,7 +91,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
               side: BorderSide.none,
               borderRadius: BorderRadius.circular(15),
             ),
-            color: isSelected ? Colors.lightBlueAccent : Colors.white,
+            color: isSelected ? Colors.grey : Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -123,6 +123,35 @@ class _IngredientsPageState extends State<IngredientsPage> {
             ),
           );
         },
+      ),
+      floatingActionButton: Container(
+        height: 70.0,
+        width: 70.0,
+        child: FittedBox(
+          child: FloatingActionButton(
+            onPressed: () {
+              // Put your logic for generating a recipe here
+            },
+            backgroundColor: Color(0xFFC3C1C1),
+            elevation: 8.0,
+            shape: const CircleBorder(
+              side: BorderSide.none,
+            ),
+            child: const Icon(Icons.auto_awesome_mosaic, // Icon that represents generating a recipe
+              size: 35, // Adjust the size as needed
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: const BottomAppBar(
+        color: Color(0xFFD9D9D9),
+        height: 60.0,
+        shape: CircularNotchedRectangle(), // Notch for FloatingActionButton
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
       ),
     );
   }
