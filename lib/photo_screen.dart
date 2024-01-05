@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 late List<CameraDescription> cameras;
+
 
 Future<void> initCamera() async {
   cameras = await availableCameras();
 }
+
 
 class PhotoScreen extends StatefulWidget {
   const PhotoScreen({super.key});
@@ -22,7 +25,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void initState() {
     super.initState();
     _cameraController = CameraController(cameras[0], ResolutionPreset.max);
-    _cameraController.initialize().then((_) {
+    _cameraController.initialize().then((value) {
       if (!mounted) {
         return;
       }
@@ -38,7 +41,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the size of the screen
     var screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -49,12 +51,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
           ? Stack(
         children: [
           Padding(
-            // Add padding to push the camera box up a bit
-            padding: EdgeInsets.only(top: screenSize.height * 0.05), // Adjust this value as needed
+            padding: EdgeInsets.only(top: screenSize.height * 0.05),
             child: Container(
-              // Set the height to a specific value or a proportion of the screen height
-              height: screenSize.height * 0.7, // 70% of the screen height
-              width: screenSize.width, // Match the screen width
+              height: screenSize.height * 0.7,
+              width: screenSize.width,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.black,
@@ -79,7 +79,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DisplayPictureScreen(imagePath: image.path),
+                          builder: (context) =>
+                              DisplayPictureScreen(imagePath: image.path),
                         ),
                       );
                     }
