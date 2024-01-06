@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+Set<String> _favoritedRecipes = <String>{};
+
 
 class IngredientSearchScreen extends StatefulWidget {
   final List<String> ingredientNames;
@@ -12,14 +16,63 @@ class IngredientSearchScreen extends StatefulWidget {
   _IngredientSearchScreenState createState() => _IngredientSearchScreenState();
 }
 
-class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
+class _IngredientSearchScreenState extends State<IngredientSearchScreen> with WidgetsBindingObserver{
   late List<Map<String, dynamic>> _recipes = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _favoritedRecipes.clear();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _fetchInitialData() {
+    _fetchUserFavorites();
     _searchRecipes();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _fetchInitialData();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchInitialData();
+  }
+
+  Future<void> _fetchUserFavorites() async {
+    String? userId = _auth.currentUser?.uid;
+
+    if (userId != null) {
+      QuerySnapshot userDocSnapshot = await _firestore
+          .collection('UserRecipes')
+          .where('user_id', isEqualTo: _firestore.doc('Users/$userId'))
+          .get();
+
+      if (userDocSnapshot.docs.isNotEmpty) {
+        var userRecipes = userDocSnapshot.docs.first.data() as Map<String, dynamic>?;
+        var recipeRefs = userRecipes?['recipe_id'] as List<dynamic>;
+
+        for (var ref in recipeRefs) {
+          if (ref is DocumentReference) {
+            setState(() {
+              _favoritedRecipes.add(ref.id);
+            });
+          }
+        }
+      }
+    }
   }
 
   Future<void> _searchRecipes() async {
@@ -60,10 +113,9 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
     for (var recipeDoc in querySnapshot.docs) {
       var recipeData = recipeDoc.data();
-      var recipeIngredientRefs = recipeData['ingredients'] as List<dynamic>; // Assuming this is the correct field name
+      var recipeIngredientRefs = recipeData['ingredients'] as List<dynamic>;
       int matchCount = 0;
 
-      // Check if the references are stored as strings (paths) and not as DocumentReference objects
       for (var refPath in recipeIngredientRefs) {
         if (refPath is String) {
           String? id = refPath.split('/').last;
@@ -71,7 +123,6 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
             matchCount++;
           }
         } else if (refPath is DocumentReference) {
-          // If it's a DocumentReference, you can directly access the ID
           if (ingredientIds.contains(refPath.id)) {
             matchCount++;
           }
@@ -80,12 +131,67 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
       if (matchCount >= 2) {
         Map<String, dynamic> recipeDetails = recipeDoc.data()!;
-        recipeDetails['id'] = recipeDoc.id; // Include the recipeId
+        recipeDetails['id'] = recipeDoc.id;
         matchingRecipes.add(recipeDetails);
       }
     }
 
     return matchingRecipes;
+  }
+
+  Future<void> _toggleFavorite(String recipeId) async {
+    try {
+      String? userId = _auth.currentUser?.uid;
+      DocumentReference recipeRef = FirebaseFirestore.instance.doc('Recipes/$recipeId');
+
+      if (userId != null && recipeId.isNotEmpty) {
+        QuerySnapshot userDocSnapshot = await FirebaseFirestore.instance
+            .collection('UserRecipes')
+            .where('user_id', isEqualTo: FirebaseFirestore.instance.doc('Users/$userId'))
+            .get();
+
+        if (userDocSnapshot.docs.isNotEmpty) {
+          DocumentReference userDocRef = userDocSnapshot.docs.first.reference;
+          if (_favoritedRecipes.contains(recipeId)) {
+            await userDocRef.update({
+              'recipe_id': FieldValue.arrayRemove([recipeRef]),
+            });
+
+            setState(() {
+              _favoritedRecipes.remove(recipeId);
+            });
+          } else {
+            await userDocRef.update({
+              'recipe_id': FieldValue.arrayUnion([recipeRef]),
+            });
+
+            setState(() {
+              _favoritedRecipes.add(recipeId);
+            });
+          }
+
+          print("Toggled favorite status for recipe with ID $recipeId for user $userId.");
+        } else {
+          DocumentReference newUserDocRef = FirebaseFirestore.instance.collection('UserRecipes').doc();
+          await newUserDocRef.set({
+            'user_id': FirebaseFirestore.instance.doc('Users/$userId'),
+            'recipe_id': [_favoritedRecipes.contains(recipeId) ? FieldValue.arrayRemove([recipeRef]) : FieldValue.arrayUnion([recipeRef])],
+          });
+
+          setState(() {
+            if (_favoritedRecipes.contains(recipeId)) {
+              _favoritedRecipes.remove(recipeId);
+            } else {
+              _favoritedRecipes.add(recipeId);
+            }
+          });
+
+          print("Created UserRecipes document and toggled favorite status for recipe with ID $recipeId for user $userId.");
+        }
+      }
+    } catch (e) {
+      print('An error occurred while toggling recipe favorite status: $e');
+    }
   }
 
   @override
@@ -99,14 +205,68 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
         appBar: AppBar(
           title: const Text('Recipes with Your Ingredients'),
         ),
-        body: ListView.builder(
-          itemCount: _recipes.length,
-          itemBuilder: (context, index) {
-            var recipe = _recipes[index];
-            return ListTile(
-              title: Text(recipe['name'] ?? 'Unnamed Recipe'),
-            );
-          },
+        body: Expanded(
+          child: ListView.builder(
+            itemCount: _recipes.length,
+            itemBuilder: (context, index) {
+              var recipe = _recipes[index];
+              return Card(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.circular(25.5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Stack(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25.5),
+                                topRight: Radius.circular(25.5)),
+                            child: Container(
+                              height: 100,
+                              child: recipe['image_url'] != null
+                                  ? Image.network(
+                                recipe['image_url'],
+                                fit: BoxFit.cover,
+                              )
+                                  : const SizedBox.shrink(),
+                            ),
+                          ),
+                          ListTile(
+                            title: Text(
+                              recipe['name'] ?? 'Recipe Name',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              "${recipe['description'] ?? 'Description'}\nPrep time: ${recipe['preparation_time'] ?? 'N/A'}\nRating: ${recipe['rating'] ?? 'N/A'}",
+                            ),
+                            isThreeLine: true,
+                          ),
+                        ],
+                      ),
+                      Positioned(
+                        bottom: 0.0,
+                        right: 18.0,
+                        child: IconButton(
+                          icon: Icon(
+                            _favoritedRecipes.contains(recipe['id']) ? Icons.favorite : Icons.favorite_border_outlined,
+                            color: _favoritedRecipes.contains(recipe['id']) ? Colors.brown : null,
+                          ),
+                          onPressed: () {
+                            _toggleFavorite(recipe['id']);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       );
     }

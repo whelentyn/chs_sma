@@ -72,9 +72,9 @@ class _IngredientsPageState extends State<IngredientsPage> {
           },
           decoration: InputDecoration(
             hintText: "Search Ingredients",
-            hintStyle: TextStyle(color: Colors.white),
+            hintStyle: TextStyle(color: Colors.black),
           ),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
       ),
       body: GridView.builder(
@@ -135,6 +135,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => IngredientSearchScreen(ingredientNames: selectedIngredientNames),
+                  maintainState: false,
                 ),
               );
             },
