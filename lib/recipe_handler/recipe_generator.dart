@@ -1,3 +1,4 @@
+import 'package:cooking_app/recipe_handler/recipe_displayer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -210,58 +211,68 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> with Wi
             itemCount: _recipes.length,
             itemBuilder: (context, index) {
               var recipe = _recipes[index];
-              return Card(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide.none,
-                  borderRadius: BorderRadius.circular(25.5),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Stack(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.5),
-                                topRight: Radius.circular(25.5)),
-                            child: Container(
-                              height: 100,
-                              child: recipe['image_url'] != null
-                                  ? Image.network(
-                                recipe['image_url'],
-                                fit: BoxFit.cover,
-                              )
-                                  : const SizedBox.shrink(),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecipeDisplayer(recipeId: recipe['id']),
+                    ),
+                  );
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide.none,
+                    borderRadius: BorderRadius.circular(25.5),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25.5),
+                                  topRight: Radius.circular(25.5)),
+                              child: Container(
+                                height: 100,
+                                child: recipe['image_url'] != null
+                                    ? Image.network(
+                                  recipe['image_url'],
+                                  fit: BoxFit.cover,
+                                )
+                                    : const SizedBox.shrink(),
+                              ),
                             ),
-                          ),
-                          ListTile(
-                            title: Text(
-                              recipe['name'] ?? 'Recipe Name',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ListTile(
+                              title: Text(
+                                recipe['name'] ?? 'Recipe Name',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                "${recipe['description'] ?? 'Description'}\nPrep time: ${recipe['preparation_time'] ?? 'N/A'}\nRating: ${recipe['rating'] ?? 'N/A'}",
+                              ),
+                              isThreeLine: true,
                             ),
-                            subtitle: Text(
-                              "${recipe['description'] ?? 'Description'}\nPrep time: ${recipe['preparation_time'] ?? 'N/A'}\nRating: ${recipe['rating'] ?? 'N/A'}",
-                            ),
-                            isThreeLine: true,
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        bottom: 0.0,
-                        right: 18.0,
-                        child: IconButton(
-                          icon: Icon(
-                            _favoritedRecipes.contains(recipe['id']) ? Icons.favorite : Icons.favorite_border_outlined,
-                            color: _favoritedRecipes.contains(recipe['id']) ? Colors.brown : null,
-                          ),
-                          onPressed: () {
-                            _toggleFavorite(recipe['id']);
-                          },
+                          ],
                         ),
-                      ),
-                    ],
+                        Positioned(
+                          bottom: 0.0,
+                          right: 18.0,
+                          child: IconButton(
+                            icon: Icon(
+                              _favoritedRecipes.contains(recipe['id']) ? Icons.favorite : Icons.favorite_border_outlined,
+                              color: _favoritedRecipes.contains(recipe['id']) ? Colors.brown : null,
+                            ),
+                            onPressed: () {
+                              _toggleFavorite(recipe['id']);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
