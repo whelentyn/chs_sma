@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cooking_app/edit_profile_screen.dart';
-import 'package:cooking_app/photo_screen.dart';
+import 'package:cooking_app/main_user/edit_profile_screen.dart';
+import 'package:cooking_app/recipe_handler/photo_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'auth/login_screen.dart';
+import '../auth/login_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -229,10 +229,8 @@ class _MainPageState extends State<MainPage> {
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(25.5),
                                   topRight: Radius.circular(25.5)),
-                              // Adjust the radius as needed
                               child: Container(
                                 height: 100,
-                                // Adjust the height of the image as needed
                                 child: recipe['image_url'] != null
                                     ? Image.network(
                                         recipe['image_url'],
@@ -269,7 +267,7 @@ class _MainPageState extends State<MainPage> {
                                 const Icon(Icons.favorite, color: Colors.brown),
                             onPressed: () {
                               String? recipeId =
-                                  recipe['id']; // Use the recipe ID directly
+                                  recipe['id'];
                               if (recipeId != null) {
                                 _removeRecipeFromUser(recipeId);
                               }
@@ -290,16 +288,19 @@ class _MainPageState extends State<MainPage> {
         width: 70.0,
         child: FittedBox(
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const PhotoScreen()));
+            },
             backgroundColor: Color(0xFFC3C1C1),
             elevation: 8.0,
             shape: const CircleBorder(
               side: BorderSide.none,
             ),
             child: Image.asset(
-              'assets/camIcon.png', // Replace with the path to your custom icon
-              width: 35, // Adjust the width as needed
-              height: 35, // Adjust the height as needed
+              'assets/camIcon.png',
+              width: 35,
+              height: 35,
             ),
           ),
         ),

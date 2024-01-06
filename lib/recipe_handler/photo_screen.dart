@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:cooking_app/recipe_handler/ingredients_selector_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -71,7 +72,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
             child: Center(
               child: ElevatedButton.icon(
                 icon: Icon(Icons.camera),
-                label: Text("Take Photo"),
+                label: const Text("Take Photo"),
                 onPressed: () async {
                   try {
                     if (_cameraController.value.isInitialized) {
@@ -80,7 +81,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              DisplayPictureScreen(imagePath: image.path),
+                              IngredientsPage(),
                         ),
                       );
                     }
@@ -94,20 +95,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
         ],
       )
           : Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-
-  const DisplayPictureScreen({super.key, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
     );
   }
 }
