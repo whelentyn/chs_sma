@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'auth/login_screen.dart';
+import '../auth/login_screen.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -63,13 +63,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       User? user = _auth.currentUser;
       if (user != null) {
-        // Update the user's first and last names
         await _firestore.collection('Users').doc(user.uid).update({
           'firstName': _firstNameController.text,
           'lastName': _lastNameController.text,
         });
-
-        // If new password fields are filled and match, update the password
         if (_newPassword == _confirmNewPassword && _newPassword.isNotEmpty) {
           await user.updatePassword(_newPassword);
         } else if (_newPassword.isNotEmpty) {
@@ -135,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                       hintText: " First Name",
                       border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                      filled: true,  // Set to true to enable background color
+                      filled: true,
                       fillColor: Color(0xFFD9D9D9),
                     ),
                   ),
@@ -147,7 +144,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                       hintText: " Last Name",
                       border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                      filled: true,  // Set to true to enable background color
+                      filled: true,
                       fillColor: Color(0xFFD9D9D9),
                     ),
                   ),
@@ -177,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                       hintText: " New Password",
                       border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                      filled: true,  // Set to true to enable background color
+                      filled: true,
                       fillColor: Color(0xFFD9D9D9),
                     ),
                     onChanged: (value) {
@@ -192,7 +189,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                       hintText: " Confirm New Password",
                       border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                      filled: true,  // Set to true to enable background color
+                      filled: true,
                       fillColor: Color(0xFFD9D9D9),
                     ),
                     validator: (value) {

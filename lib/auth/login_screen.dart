@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'forgot_password.dart';
-import '../main_page.dart';
+import '../main_user/main_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

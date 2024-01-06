@@ -1,3 +1,4 @@
+import 'package:cooking_app/recipe_handler/recipe_generator.dart'; // Ensure this path is correct
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -45,7 +46,6 @@ class _IngredientsPageState extends State<IngredientsPage> {
       return ingredient['name'].toString().toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
 
-    // Sort the filtered list to bring selected items to the top
     List<int> sortedIndices = List.generate(filteredIngredients.length, (index) => index);
     sortedIndices.sort((a, b) {
       bool aSelected = _selectedIndices.contains(_ingredients.indexOf(filteredIngredients[a]));
@@ -72,15 +72,15 @@ class _IngredientsPageState extends State<IngredientsPage> {
           },
           decoration: InputDecoration(
             hintText: "Search Ingredients",
-            hintStyle: TextStyle(color: Colors.black),
+            hintStyle: TextStyle(color: Colors.white),
           ),
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Three items per row
-          childAspectRatio: 3 / 4, // Adjust the ratio based on your item's content
+          crossAxisCount: 3,
+          childAspectRatio: 3 / 4,
         ),
         itemCount: displayIngredients.length,
         itemBuilder: (context, index) {
@@ -97,7 +97,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
                     ),
@@ -130,15 +130,21 @@ class _IngredientsPageState extends State<IngredientsPage> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
-              // Put your logic for generating a recipe here
+              List<String> selectedIngredientNames = _selectedIndices.map((index) => _ingredients[index]['name'] as String).toList();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IngredientSearchScreen(ingredientNames: selectedIngredientNames),
+                ),
+              );
             },
             backgroundColor: Color(0xFFC3C1C1),
             elevation: 8.0,
             shape: const CircleBorder(
               side: BorderSide.none,
             ),
-            child: const Icon(Icons.auto_awesome_mosaic, // Icon that represents generating a recipe
-              size: 35, // Adjust the size as needed
+            child: const Icon(Icons.auto_awesome_mosaic,
+              size: 35,
             ),
           ),
         ),
@@ -147,7 +153,7 @@ class _IngredientsPageState extends State<IngredientsPage> {
       bottomNavigationBar: const BottomAppBar(
         color: Color(0xFFD9D9D9),
         height: 60.0,
-        shape: CircularNotchedRectangle(), // Notch for FloatingActionButton
+        shape: CircularNotchedRectangle(),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

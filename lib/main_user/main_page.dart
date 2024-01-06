@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cooking_app/edit_profile_screen.dart';
-import 'package:cooking_app/photo_screen.dart';
+import 'package:cooking_app/main_user/edit_profile_screen.dart';
+import 'package:cooking_app/recipe_handler/photo_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'auth/login_screen.dart';
+import '../auth/login_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
