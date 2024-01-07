@@ -103,16 +103,16 @@ class _RecipeDisplayerState extends State<RecipeDisplayer> {
             Center(
               child: Container(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                //height: 200,
-                width: MediaQuery.of(context).size.width,
                 alignment: Alignment.center,
                 child: _recipeData?['image_url'] != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
                         child: Container(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width,
                           child: Image.network(
                             _recipeData!['image_url'],
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       )
