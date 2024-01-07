@@ -66,26 +66,21 @@ class _LoginScreenState extends State<LoginScreen> {
             color: Color(0xFF545454)
         ),),
         leading: Padding(
-          padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
+          padding: EdgeInsets.only(left: 15.0),
           child: Image.asset(
-            'assets/logoFoodCam.png', // Replace with the path to your custom icon
-            width: 50, // Adjust the width as needed
-            height: 50, // Adjust the height as needed
+            'assets/logoFoodCam.png',
+            width: 50,
+            height: 50,
           ),
         ),
       ),
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(8.0),
             alignment: Alignment.center,
             child: const Column(
               children: [
-                /*Icon(
-                  Icons.egg_alt, // Choose a food-related icon
-                  size: 50,
-                  color: Colors.yellow,
-                ),*/
                 SizedBox(height: 40),
                 Text(
                   "Log In",
@@ -113,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                         hintText: " Email",
                         border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                        filled: true,  // Set to true to enable background color
+                        filled: true,
                         fillColor: Color(0xAAD9D9D9),
                       ),
                       validator: (value) {
@@ -136,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                         hintText: " Password",
                         border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                        filled: true,  // Set to true to enable background color
+                        filled: true,
                         fillColor: Color(0xAAD9D9D9),
                       ),
                       validator: (value) {
@@ -161,13 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
-                          // Set a high value for a rounded square
                         ),
                         backgroundColor: const Color(0xFFD9D9D9),
                         padding: const EdgeInsets.all(5.0),
                       ),
                       child: const Icon(
-                        Icons.done, // Choose a food-related icon
+                        Icons.done,
                         size: 40,
                         color: Color(0xFF545454),
                       ),

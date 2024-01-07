@@ -159,12 +159,11 @@ class _MainPageState extends State<MainPage> {
               color: Color(0xFF545454)),
         ),
         leading: Padding(
-            padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
+            padding: EdgeInsets.only(left: 15.0),
             child: Image.asset(
               'assets/logoFoodCam.png',
-              // Replace with the path to your custom icon
-              width: 50, // Adjust the width as needed
-              height: 50, // Adjust the height as needed
+              width: 50,
+              height: 50,
             )),
         actions: <Widget>[
           IconButton(
@@ -209,76 +208,82 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _allResults.length,
-              itemBuilder: (context, index) {
-                var recipe = _allResults[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide.none,
-                    borderRadius: BorderRadius.circular(25.5),
-                  ),
-                  child: Padding(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: _allResults.length,
+                itemBuilder: (context, index) {
+                  var recipe = _allResults[index];
+                  return Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Stack(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Stack(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.5),
-                                  topRight: Radius.circular(25.5)),
-                              child: Container(
-                                height: 100,
-                                child: recipe['image_url'] != null
-                                    ? Image.network(
-                                        recipe['image_url'],
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const SizedBox.shrink(),
-                              ),
-                            ),
-                            ListTile(
-                              title: Text(
-                                recipe['name'] ?? 'Recipe Name',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                recipe['description'] ?? 'Description',
-                              ),
-                              trailing: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    recipe['preparation_time'] ?? 'Prep Time',
-                                    style: TextStyle(fontSize: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20.0),
+                                      topRight: Radius.circular(20.0)),
+                                  child: Container(
+                                    height: 150,
+                                    child: recipe['image_url'] != null
+                                        ? Image.network(
+                                            recipe['image_url'],
+                                            fit: BoxFit.cover,
+                                          )
+                                        : const SizedBox.shrink(),
                                   ),
-                                ],
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    recipe['name'] ?? 'Recipe Name',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(
+                                    recipe['description'] ?? 'Description',
+                                  ),
+                                  trailing: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        recipe['preparation_time'] ?? 'Prep Time',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Positioned(
+                              bottom: 0.0,
+                              right: 18.0,
+                              child: IconButton(
+                                icon:
+                                    const Icon(Icons.favorite, color: Colors.brown),
+                                onPressed: () {
+                                  String? recipeId =
+                                      recipe['id'];
+                                  if (recipeId != null) {
+                                    _removeRecipeFromUser(recipeId);
+                                  }
+                                },
                               ),
                             ),
                           ],
                         ),
-                        Positioned(
-                          bottom: 0.0,
-                          right: 18.0,
-                          child: IconButton(
-                            icon:
-                                const Icon(Icons.favorite, color: Colors.brown),
-                            onPressed: () {
-                              String? recipeId =
-                                  recipe['id'];
-                              if (recipeId != null) {
-                                _removeRecipeFromUser(recipeId);
-                              }
-                            },
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],

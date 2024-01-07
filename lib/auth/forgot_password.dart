@@ -53,11 +53,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             color: Color(0xFF545454)
         ),),
         leading: Padding(
-            padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
+            padding: EdgeInsets.only(left: 15.0),
             child: Image.asset(
-              'assets/logoFoodCam.png', // Replace with the path to your custom icon
-              width: 50, // Adjust the width as needed
-              height: 50, // Adjust the height as needed
+              'assets/logoFoodCam.png',
+              width: 50,
+              height: 50,
             )
         ),
       ),
@@ -80,7 +80,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                   hintText: " Email",
                   border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30)),
-                  filled: true,  // Set to true to enable background color
+                  filled: true,
                   fillColor: Color(0xFFD9D9D9),
                 ),
                 validator: (value) {

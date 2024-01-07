@@ -94,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
               child: const Column(
                 children: [
