@@ -94,7 +94,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
               child: const Column(
                 children: [
@@ -103,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   size: 50,
                   color: Colors.yellow,
                 ),*/
-                  SizedBox(height: 40),
+                  SizedBox(height: 10),
                   Text(
                     "Sign Up",
                     style: TextStyle(
@@ -223,7 +223,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0), // Set a high value for a rounded square
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
                           backgroundColor: const Color(0xFFD9D9D9),
                           padding: const EdgeInsets.all(5.0),

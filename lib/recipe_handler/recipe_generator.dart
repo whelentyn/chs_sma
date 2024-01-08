@@ -2,6 +2,7 @@ import 'package:cooking_app/recipe_handler/recipe_displayer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -204,80 +205,126 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> with Wi
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Recipes with Your Ingredients'),
+          title: Text(
+            "Food\nCam",
+            style: GoogleFonts.lexendMega(
+                fontWeight: FontWeight.bold,
+                fontSize: 22.0,
+                height: 0.8,
+                color: Color(0xFF545454)),
+          ),
+          leading: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Image.asset(
+                'assets/logoFoodCam.png',
+                width: 50,
+                height: 50,
+              )),
         ),
-        body: Expanded(
-          child: ListView.builder(
-            itemCount: _recipes.length,
-            itemBuilder: (context, index) {
-              var recipe = _recipes[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecipeDisplayer(recipeId: recipe['id']),
-                    ),
-                  );
-                },
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide.none,
-                    borderRadius: BorderRadius.circular(25.5),
+        body: Column(
+          children: [
+            SizedBox(height: 8.0),
+            Container(
+              padding: const EdgeInsets.only(left: 8.0),
+              alignment: Alignment.topLeft,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Recipes with your ingredients",
+                  style: TextStyle(color: Color(0xFF545454),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Stack(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.5),
-                                  topRight: Radius.circular(25.5)),
-                              child: Container(
-                                height: 100,
-                                child: recipe['image_url'] != null
-                                    ? Image.network(
-                                  recipe['image_url'],
-                                  fit: BoxFit.cover,
-                                )
-                                    : const SizedBox.shrink(),
-                              ),
-                            ),
-                            ListTile(
-                              title: Text(
-                                recipe['name'] ?? 'Recipe Name',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(
-                                "${recipe['description'] ?? 'Description'}\nPrep time: ${recipe['preparation_time'] ?? 'N/A'}\nRating: ${recipe['rating'] ?? 'N/A'}",
-                              ),
-                              isThreeLine: true,
-                            ),
-                          ],
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.builder(
+                  itemCount: _recipes.length,
+                  itemBuilder: (context, index) {
+                    var recipe = _recipes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipeDisplayer(recipeId: recipe['id']),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                        Positioned(
-                          bottom: 0.0,
-                          right: 18.0,
-                          child: IconButton(
-                            icon: Icon(
-                              _favoritedRecipes.contains(recipe['id']) ? Icons.favorite : Icons.favorite_border_outlined,
-                              color: _favoritedRecipes.contains(recipe['id']) ? Colors.brown : null,
-                            ),
-                            onPressed: () {
-                              _toggleFavorite(recipe['id']);
-                            },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Stack(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20.0),
+                                        topRight: Radius.circular(20.0)),
+                                    child: Container(
+                                      height: 150,
+                                      child: recipe['image_url'] != null
+                                          ? Image.network(
+                                        recipe['image_url'],
+                                        fit: BoxFit.cover,
+                                      )
+                                          : const SizedBox.shrink(),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    title: Text(
+                                      recipe['name'] ?? 'Recipe Name',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      "${recipe['description'] ?? 'Description'}\nRating: ${recipe['rating'] ?? 'N/A'}",
+                                    ),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          recipe['preparation_time'] ?? 'Prep Time',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                    isThreeLine: true,
+                                  ),
+                                ],
+                              ),
+                              Positioned(
+                                bottom: 0.0,
+                                right: 18.0,
+                                child: IconButton(
+                                  icon: Icon(
+                                    _favoritedRecipes.contains(recipe['id']) ? Icons.favorite : Icons.favorite_border_outlined,
+                                    color: _favoritedRecipes.contains(recipe['id']) ? Colors.brown : null,
+                                  ),
+                                  onPressed: () {
+                                    _toggleFavorite(recipe['id']);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       );
     }
