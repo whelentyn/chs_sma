@@ -4,6 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class IngredientsPage extends StatefulWidget {
+  final List<String> preselectedIngredients;
+
+  IngredientsPage({super.key, required this.preselectedIngredients});
   @override
   _IngredientsPageState createState() => _IngredientsPageState();
 }
@@ -29,6 +32,16 @@ class _IngredientsPageState extends State<IngredientsPage> {
           .toList();
       setState(() {
         _ingredients = ingredients;
+
+        if (widget.preselectedIngredients.isNotEmpty) {
+          Set<String> lowercasePreselected = widget.preselectedIngredients.map((e) => e.toLowerCase()).toSet();
+          for (int i = 0; i < _ingredients.length; i++) {
+            String ingredientName = _ingredients[i]['name'].toString().toLowerCase();
+            if (lowercasePreselected.contains(ingredientName)) {
+              _selectedIndices.add(i);
+            }
+          }
+        }
       });
     } catch (e) {
       print("An error occurred while retrieving ingredients: $e");
