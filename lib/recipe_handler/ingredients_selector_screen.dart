@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../main_user/main_page.dart';
+
 class IngredientsPage extends StatefulWidget {
   final List<String> preselectedIngredients;
 
@@ -86,22 +88,39 @@ class _IngredientsPageState extends State<IngredientsPage> {
     List<Map<String, dynamic>> displayIngredients = _getFilteredIngredients();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Food\nCam",
-          style: GoogleFonts.lexendMega(
-              fontWeight: FontWeight.bold,
-              fontSize: 22.0,
-              height: 0.8,
-              color: Color(0xFF545454)),
+      appBar:AppBar(
+        title: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MainPage()),
+            );
+          },
+          child: Text(
+            "Food\nCam",
+            style: GoogleFonts.lexendMega(
+                fontWeight: FontWeight.bold,
+                fontSize: 22.0,
+                height: 0.8,
+                color: Color(0xFF545454)),
+          ),
         ),
         leading: Padding(
-            padding: const EdgeInsets.only(left: 15.0),
+          padding: const EdgeInsets.only(left: 15.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MainPage()),
+              );
+            },
             child: Image.asset(
               'assets/logoFoodCam.png',
               width: 50,
               height: 50,
-            )),
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: [

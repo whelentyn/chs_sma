@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../auth/login_screen.dart';
+import '../recipe_handler/recipe_displayer.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -259,6 +260,17 @@ class _MainPageState extends State<MainPage> {
                                       ),
                                     ],
                                   ),
+                                  onTap: () {
+                                    String? recipeId = recipe['id'];
+                                    if (recipeId != null) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RecipeDisplayer(recipeId: recipeId),
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
                               ],
                             ),

@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: Alignment.center,
             child: const Column(
               children: [
-                SizedBox(height: 40),
+                SizedBox(height: 10),
                 Text(
                   "Log In",
                   style: TextStyle(
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
                 child: Column(

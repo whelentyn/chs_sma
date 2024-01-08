@@ -145,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       TextFormField(
                         controller: _passController,
                         obscureText: true,
@@ -168,7 +168,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       TextFormField(
                         controller: _firstNameController,
                         keyboardType: TextInputType.name,
@@ -191,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       TextFormField(
                         controller: _lastNameController,
                         keyboardType: TextInputType.name,
@@ -214,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: (){
                           if(_formKey.currentState!.validate()) {
