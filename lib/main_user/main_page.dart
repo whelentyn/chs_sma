@@ -19,13 +19,13 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final List<Map<String, dynamic>> _allResults = [];
-  String _selectedCategory = 'All'; // Track the selected category
+  String _selectedCategory = 'All';
   final List<String> _recipeIds = [];
 
   @override
   void initState() {
     super.initState();
-    _getUserRecipes(); // Fetch all recipes initially
+    _getUserRecipes();
   }
 
   Future<void> _getUserRecipes({String category = 'All'}) async {
@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
               (category == 'All' ||
                   recipeDoc.data()!['category'] == category)) {
             Map<String, dynamic> recipeData = recipeDoc.data()!;
-            recipeData['id'] = recipeId; // Include the recipeId
+            recipeData['id'] = recipeId;
             userRecipes.add(recipeData);
           }
         }
@@ -104,7 +104,7 @@ class _MainPageState extends State<MainPage> {
       child: Text(
         label,
         style: TextStyle(
-          color: Colors.black, // Change this color to your desired text color
+          color: Colors.black,
         ),
       ),
     );
