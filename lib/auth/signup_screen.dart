@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -14,7 +11,6 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -27,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _password = "";
   String _firstName = "";
   String _lastName = "";
+
   void displayMessage(String message, {bool isError = false}) {
     final snackBar = SnackBar(
       content: Text(message),
@@ -39,21 +36,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: _email, password: _password);
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _email, password: _password);
       print("User successfully registered! ${userCredential.user!.email}");
-
-      await _firestore.collection('Users').doc(userCredential.user!.uid).set({
-        'firstName': _firstName,
-        'lastName': _lastName,
-        'email': _email,
-      });
 
       displayMessage("User successfully registered! Redirecting...");
       Future.delayed(const Duration(seconds: 3), () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
       });
-
-    } catch(e) {
+    } catch (e) {
       print("Error during registration: $e");
       displayMessage("Error during registration: $e", isError: true);
     } finally {
@@ -75,34 +66,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Food\nCam", style: GoogleFonts.lexendMega(
-            fontWeight: FontWeight.bold,
-            fontSize: 22.0,
-            height: 0.8,
-            color: Color(0xFF545454)
-        ),),
+        title: const Text("Food\nCam"),
         leading: Padding(
-            padding: EdgeInsets.only(left: 15.0), // Adjust the value as needed
-            child: Image.asset(
-              'assets/logoFoodCam.png', // Replace with the path to your custom icon
-              width: 50, // Adjust the width as needed
-              height: 50, // Adjust the height as needed
-            )
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Image.asset(
+            'assets/logoFoodCam.png',
+            width: 50,
+            height: 50,
+          ),
         ),
       ),
-      body: Column(
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             Container(
               padding: const EdgeInsets.all(8.0),
               alignment: Alignment.center,
               child: const Column(
                 children: [
-                  /*Icon(
-                  Icons.egg_alt, // Choose a food-related icon
-                  size: 50,
-                  color: Colors.yellow,
-                ),*/
                   SizedBox(height: 10),
                   Text(
                     "Sign Up",
@@ -129,17 +110,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                           hintText: " Email",
-                          border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                          filled: true,  // Set to true to enable background color
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          filled: true,
                           fillColor: Color(0xFFD9D9D9),
                         ),
-                        validator: (value){
-                          if(value == null || value.isEmpty) {
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
                             return "Please enter your email address!";
                           }
                           return null;
                         },
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _email = value;
                           });
@@ -152,17 +136,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                           hintText: " Password",
-                          border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                          filled: true,  // Set to true to enable background color
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          filled: true,
                           fillColor: Color(0xFFD9D9D9),
                         ),
-                        validator: (value){
-                          if(value == null || value.isEmpty) {
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
                             return "Please enter your password!";
                           }
                           return null;
                         },
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _password = value;
                           });
@@ -175,17 +162,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                           hintText: " First Name",
-                          border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                          filled: true,  // Set to true to enable background color
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          filled: true,
                           fillColor: Color(0xFFD9D9D9),
                         ),
-                        validator: (value){
-                          if(value == null || value.isEmpty) {
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
                             return "Please enter your first name!";
                           }
                           return null;
                         },
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _firstName = value;
                           });
@@ -198,17 +188,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         decoration: InputDecoration(
                           hintStyle: const TextStyle(color: Color(0XAA7A7A7A)),
                           hintText: " Last Name",
-                          border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(30),),
-                          filled: true,  // Set to true to enable background color
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          filled: true,
                           fillColor: Color(0xFFD9D9D9),
                         ),
-                        validator: (value){
-                          if(value == null || value.isEmpty) {
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
                             return "Please enter your last name!";
                           }
                           return null;
                         },
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             _lastName = value;
                           });
@@ -216,8 +209,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: (){
-                          if(_formKey.currentState!.validate()) {
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
                             handleSignUp();
                           }
                         },
@@ -229,7 +222,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: const EdgeInsets.all(5.0),
                         ),
                         child: const Icon(
-                          Icons.done, // Choose a food-related icon
+                          Icons.done,
                           size: 40,
                           color: Color(0xFF545454),
                         ),
@@ -239,10 +232,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
             ),
-          ]
+          ],
+        ),
       ),
     );
   }
 }
-
-
